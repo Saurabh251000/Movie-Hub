@@ -1,18 +1,21 @@
 "use client";
 import React, { useState } from 'react';
 import Modal from './Modal';
-import { movies } from '@/data';
+// import { movies } from '@/utils/data';
 import { useRouter } from 'next/navigation'; // For redirection
+import { Movie } from '@/utils/interfaces';
 
 interface AddReviewModalProps {
+  movielist: Movie[];
   isOpen: boolean;
   onClose: () => void;
-  onAddReview: (movieName: string, reviewerName: string, rating: number, comments: string) => void;
+  onAddReview: (movieId:string, movieName: string, reviewerName: string, rating: number, comments: string) => void;
 }
 
-const AddReviewModal: React.FC<AddReviewModalProps> = ({ isOpen, onClose, onAddReview }) => {
-  const [selectedMovie, setSelectedMovie] = useState(movies[0]?.name || ''); // Default to the first movie
-  const [selectedMovieId, setSelectedMovieId] = useState(movies[0]?.id || 0);
+const AddReviewModal: React.FC<AddReviewModalProps> = ({ movielist, isOpen, onClose, onAddReview }) => {
+
+  const [selectedMovie, setSelectedMovie] = useState(movielist[0]?.name || ''); // Default to the first movie
+  const [selectedMovieId, setSelectedMovieId] = useState<string>(movielist[0]?.id || "");
   const [reviewerName, setReviewerName] = useState('');
   const [rating, setRating] = useState(0);
   const [comments, setComments] = useState('');
@@ -20,8 +23,8 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({ isOpen, onClose, onAddR
   const router = useRouter();
 
   const handleAddReview = () => {
-    onAddReview(selectedMovie, reviewerName, rating, comments);
-    setSelectedMovie(movies[0]?.name || '');
+    onAddReview(selectedMovieId,selectedMovie, reviewerName, rating, comments);
+    setSelectedMovie(movielist[0]?.name || '');
     setReviewerName('');
     setRating(0);
     setComments('');
@@ -31,12 +34,15 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({ isOpen, onClose, onAddR
 
   const handleMovieChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedName = e.target.value;
-    const selectedMovie = movies.find(movie => movie.name === selectedName);
+    const selectedMovie = movielist.find(movie => movie.name === selectedName);
     setSelectedMovie(selectedName);
-    if (selectedMovie) {
+    if (selectedMovie && selectedMovie.id) {
       setSelectedMovieId(selectedMovie.id); // Set the selected movie ID
+    } else {
+      setSelectedMovieId(""); // Fallback to an empty string
     }
   };
+  
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -48,7 +54,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({ isOpen, onClose, onAddR
         value={selectedMovie}
         onChange={handleMovieChange}
       >
-        {movies.map((movie) => (
+        {movielist.map((movie) => (
           <option key={movie.id} value={movie.name}>
             {movie.name}
           </option>

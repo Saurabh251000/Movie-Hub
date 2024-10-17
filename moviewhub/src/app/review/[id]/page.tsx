@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import ReviewCard from '@/components/ReviewCard';
-import { movies } from '@/data';
+import { movies } from '@/utils/data';
 import AddMovieModal from '@/components/AddNewMovie';
 import AddReviewModal from '@/components/AddNewReview';
 

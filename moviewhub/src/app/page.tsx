@@ -1,74 +1,80 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
-import Card from '@/components/Card';
 import AddMovieModal from '@/components/AddNewMovie';
 import AddReviewModal from '@/components/AddNewReview';
-import { movies} from '@/data';
+import MoviesContainer from '@/components/MoviesContainer';
+import { addMovie } from '@/api/moviesAPI';
+import { addReview } from '@/api/reviewsAPI'; 
+import { Movie } from '@/utils/interfaces';
+import Loader from '@/components/Loader';
+import { fetchMovies } from '@/api/moviesAPI';
 
 const Home: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
   const [isMovieModalOpen, setIsMovieModalOpen] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [movielist, setMovielist] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const handleEdit = (movieName: string) => {
-    console.log(`Edit movie: ${movieName}`);
+  useEffect(() => {
+    const getMovies = async () => {
+      try {
+        setLoading(true);
+        const movieData = await fetchMovies();
+        console.log(movieData);
+        setMovielist(movieData);
+      } catch (error) {
+        console.error("Failed to fetch movies:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getMovies();
+  }, []);
+
+  const handleCreateMovie = async (name: string, releaseDate: string) => {
+    try {
+      const movieData = { name, releaseDate };
+      await addMovie(movieData); 
+      setMovielist((prevMovielist) => [...prevMovielist, movieData]); // Correctly append the new movie
+      console.log(`New Movie added: ${name}, Release Date: ${releaseDate}`);
+      setIsMovieModalOpen(false); // Close the modal after adding the movie
+    } catch (error) {
+      console.error("Failed to add movie:", error);
+    }
+  };
+  
+
+  const handleAddReview = async (movieId:string, movieName: string, reviewerName: string, rating: number, comments: string) => {
+    try {
+      const reviewData = { movieId, movieName, reviewerName, rating, comments };
+      await addReview(reviewData);
+      console.log(`Review added for ${movieName} by ${reviewerName}: Rating ${rating}/10, Comments: ${comments}`);
+      setIsReviewModalOpen(false); // Close the modal after adding the review
+    } catch (error) {
+      console.error("Failed to add review:", error);
+    }
   };
 
-  const handleDelete = (movieName: string) => {
-    console.log(`Delete movie: ${movieName}`);
-  };
-
-  const handleCreateMovie = (name: string, releaseDate: string) => {
-    console.log(`New Movie: ${name}, Release Date: ${releaseDate}`);
-  };
-
-  const handleAddReview = (movieName: string, reviewerName: string, rating: number, comments: string) => {
-    console.log(`Review for ${movieName} by ${reviewerName}: Rating ${rating}/10, Comments: ${comments}`);
-  };
-
-  const filteredMovies = movies.filter(movie =>
-    movie.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  if(loading){
+    return <Loader/>
+  }
 
   return (
-    <div className="w-full">
+    <div className="w-full min-h-screen bg-gray-500">
       <Navbar 
         onAddMovie={() => setIsMovieModalOpen(true)}
         onAddReview={() => setIsReviewModalOpen(true)}
       />
-      <div className="w-full px-10 py-10 ">
-        <h1 className="text-4xl font-bold mb-4">The best movie reviews site!</h1>
-        <div className="my-8">
-          <input
-            type="text"
-            placeholder="Search your favourite movie..."
-            className="border rounded-lg py-2 px-4 w-full md:w-1/2"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 ">
-          {filteredMovies.map((movie, index) => (
-            <Card
-              key={index}
-              id={movie.id}
-              name={movie.name}
-              releaseDate={movie.releaseDate}
-              reviews = {movie.reviews}
-              onEdit={() => handleEdit(movie.name)}
-              onDelete={() => handleDelete(movie.name)}
-            />
-          ))}
-        </div>
-      </div>
-
+      <MoviesContainer movielist={movielist}  />
       <AddMovieModal
         isOpen={isMovieModalOpen}
         onClose={() => setIsMovieModalOpen(false)}
         onCreateMovie={handleCreateMovie}
       />
       <AddReviewModal
+        movielist={movielist as Movie[]}
         isOpen={isReviewModalOpen}
         onClose={() => setIsReviewModalOpen(false)}
         onAddReview={handleAddReview}

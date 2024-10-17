@@ -1,7 +1,4 @@
-// src/models/Review.ts
-
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-
-export default prisma.review;
+export default prisma;

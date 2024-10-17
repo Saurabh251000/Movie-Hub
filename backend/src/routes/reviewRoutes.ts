@@ -1,11 +1,11 @@
-// src/routes/reviewRoutes.ts
-
 import { Router } from 'express';
-import { fetchReviews, addReview } from '../controllers/reviewController';
+import { addReview, fetchReview, deleteReview, updateReview } from '../controllers/reviewController';
 
 const router = Router();
 
-router.get('/', fetchReviews);
-router.post('/', addReview);
+router.post('/add', addReview);
+router.get('/fetch',fetchReview);
+router.post('/delete', deleteReview);
+router.post('/update', updateReview);
 
 export default router;
