@@ -7,7 +7,6 @@
     "strict": true, 
     "skipLibCheck": true,
     "moduleResolution": "node",
-    "types": ["node", "express"],
     "typeRoots": ["./node_modules/@types"],
   },
   "include": ["src/**/*.ts"],
