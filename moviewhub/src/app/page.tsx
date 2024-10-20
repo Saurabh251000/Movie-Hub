@@ -21,7 +21,7 @@ const Home: React.FC = () => {
       try {
         setLoading(true);
         const movieData = await fetchMovies();
-        console.log(movieData);
+        // console.log(movieData);
         setMovielist(movieData);
       } catch (error) {
         console.error("Failed to fetch movies:", error);
@@ -36,10 +36,12 @@ const Home: React.FC = () => {
   const handleCreateMovie = async (name: string, releaseDate: string) => {
     try {
       const movieData = { name, releaseDate };
-      await addMovie(movieData); 
-      setMovielist((prevMovielist) => [...prevMovielist, movieData]); // Correctly append the new movie
-      console.log(`New Movie added: ${name}, Release Date: ${releaseDate}`);
+      const newMovie = await addMovie(movieData); 
+      // console.log(newMovie);
+      setMovielist((prevMovielist) => [...prevMovielist, newMovie]); // Correctly append the new movie
+      // console.log(`New Movie added: ${name}, Release Date: ${releaseDate}`);
       setIsMovieModalOpen(false); // Close the modal after adding the movie
+      return alert("Movie Added Successfully");
     } catch (error) {
       console.error("Failed to add movie:", error);
     }
@@ -50,7 +52,7 @@ const Home: React.FC = () => {
     try {
       const reviewData = { movieId, movieName, reviewerName, rating, comments };
       await addReview(reviewData);
-      console.log(`Review added for ${movieName} by ${reviewerName}: Rating ${rating}/10, Comments: ${comments}`);
+       console.log(`Review added for ${movieName} by ${reviewerName}: Rating ${rating}/10, Comments: ${comments}`);
       setIsReviewModalOpen(false); // Close the modal after adding the review
     } catch (error) {
       console.error("Failed to add review:", error);

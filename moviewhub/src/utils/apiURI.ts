@@ -5,6 +5,7 @@ export const addMovieURI =  `${BASE_URL}/movies/add`
 export const fetchMovieURI =  `${BASE_URL}/movies/fetch`
 export const deleteMovieURI =  `${BASE_URL}/movies/delete`
 export const updateMovieURI =  `${BASE_URL}/movies/update`
+export const findMovieURI =  `${BASE_URL}/movies/find`
 
 export const addReviewURI =  `${BASE_URL}/reviews/add`
 export const fetchReviewURI =  `${BASE_URL}/reviews/fetch`

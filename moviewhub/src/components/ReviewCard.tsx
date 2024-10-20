@@ -1,6 +1,6 @@
 "use client"
+import { Review } from '@/utils/interfaces';
 import React from 'react';
-import { Review } from '@/utils/data';
 
 interface ReviewCardProps {
   review: Review;

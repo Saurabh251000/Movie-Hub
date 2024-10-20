@@ -1,6 +1,6 @@
 import apiCall from "@/utils/apiCall";
 import { Movie } from "@/utils/interfaces";
-import { addMovieURI, deleteMovieURI, fetchMovieURI, updateMovieURI } from "@/utils/apiURI";
+import { addMovieURI, deleteMovieURI, fetchMovieURI, findMovieURI, updateMovieURI } from "@/utils/apiURI";
 
 export const addMovie = (movieData: Movie) => {
   return apiCall({ method: 'POST', uri: addMovieURI, postData: movieData });
@@ -16,4 +16,8 @@ export const deleteMovie = (id:string) => {
 
 export const updateMovie = (movieData: Movie) => {
   return apiCall({ method: 'POST', uri: updateMovieURI, postData: movieData});
+};
+
+export const findMovie = (id:string) => {
+  return apiCall({ method: 'POST', uri: findMovieURI, postData: {id}});
 };

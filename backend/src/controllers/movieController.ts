@@ -50,3 +50,15 @@ export const deleteMovie = async (req: Request, res: Response) => {
     }
 };
 
+export const findMovie = async (req: Request, res: Response) => {
+    const { id } = req.body;
+    try {
+        const movie = await prisma.movie.findUnique({
+            where: { id },
+        });
+        res.status(200).json(movie);
+    } catch (error) {
+        res.status(500).json({ message: 'Movie not found', error });
+    }
+};
+
